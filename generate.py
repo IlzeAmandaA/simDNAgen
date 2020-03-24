@@ -8,7 +8,7 @@ from motif_probabilities import Motifs
 #create 20 reference genes
 keys = ['a', 'c', 'g', 't']
 probabilties = [0.25, 0.25, 0.25, 0.25]
-people_count=157
+people_count=160
 output_dict = 'output/'
 
 motifs = Motifs('motifs')
@@ -32,9 +32,9 @@ for idx,n in enumerate(lenghts):
                 m=random.randint(0, len(gene)-1)
                 gene[m]=np.random.choice(keys, 1, replace=True, p=probabilties)[0]
 
-
+            label = 0 if person < 80 else 1
             f=open(output_dict+'person'+str(person)+'.txt', 'a')
-            f.write('chrom'+str(idx)+','+''.join(gene)+','+str(0)+'\n')
+            f.write('chrom' + str(idx) + ',' + ''.join(gene) + ',' + str(label) + '\n')
             f.close()
 
 
@@ -46,26 +46,34 @@ for idx,n in enumerate(lenghts):
         gene_orig=gene.copy()
 
         for person in range(people_count):
-            gene = gene_orig.copy()
-            used_idx=[]
-            for insertion in range(num_poisson): #number of insterstions needed
-                m = random.randint(0, len(gene)-12) #random location
-                while m in used_idx:
-                    m = random.randint(0, len(gene)-12)
+            if person>=80:
+                label=1
+                gene = gene_orig.copy()
+                used_idx=[]
+                for insertion in range(num_poisson): #number of insterstions needed
+                    m = random.randint(0, len(gene)-12) #random location
+                    while m in used_idx:
+                        m = random.randint(0, len(gene)-12)
 
-                if idx<3:
-                    ppm_motif = motifs.motifs['NRF1']
-                elif idx>=3 and idx<6:
-                    ppm_motif = motifs.motifs['TFAP2A']
-                else:
-                    motif= ['NRF1','TFAP2A'][random.randint(0,1)]
-                    ppm_motif=motifs.motifs[motif]
+                    if idx<3:
+                        ppm_motif = motifs.motifs['NRF1']
+                    elif idx>=3 and idx<6:
+                        ppm_motif = motifs.motifs['TFAP2A']
+                    else:
+                        motif= ['NRF1','TFAP2A'][random.randint(0,1)]
+                        ppm_motif=motifs.motifs[motif]
 
-                for i_n,n in enumerate(range(len(ppm_motif))): #selected motif length
-                    letter = np.random.choice(keys, 1, replace=True, p=ppm_motif[i_n])[0]
-                    gene[m+i_n] = letter
-                    used_idx.append(m+i_n)
+                    for i_n,n in enumerate(range(len(ppm_motif))): #selected motif length
+                        letter = np.random.choice(keys, 1, replace=True, p=ppm_motif[i_n])[0]
+                        gene[m+i_n] = letter
+                        used_idx.append(m+i_n)
+
+            else:
+                label=0
+                for mutatation in range(int(len(gene) * 0.01)):
+                    m = random.randint(0, len(gene) - 1)
+                    gene[m] = np.random.choice(keys, 1, replace=True, p=probabilties)[0]
 
             f = open(output_dict+'person' + str(person) + '.txt', 'a')
-            f.write('chrom' + str(idx) + ',' + ''.join(gene) + ',' + str(1) + '\n')
+            f.write('chrom' + str(idx) + ',' + ''.join(gene) + ',' + str(label) + '\n')
             f.close()
