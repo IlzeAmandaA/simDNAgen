@@ -3,16 +3,15 @@ import numpy as np
 from scipy.stats import poisson
 from motif_probabilities import Motifs
 
-#20 genes
+#18 genes
 # ACGT = 0.25 probability
-#create 20 reference genes
+#create 18 reference genes
 keys = ['a', 'c', 'g', 't']
 probabilties = [0.25, 0.25, 0.25, 0.25]
 people_count=160
 output_dict = 'output/'
 
 motifs = Motifs('motifs')
-# print(motifs.motifs)
 
 
 genes={}
