@@ -9,7 +9,7 @@ class Motifs():
         self.motifs = {}
         self.motif_generation()
 
-        #load 10 motifs of interest
+        #load motifs of interest
     def obtain_all_files(self,filepath):
         """
             Returns all files for a specific folder that end in .txt
